@@ -1,0 +1,205 @@
+import React, { useState } from 'react';
+import type { Product } from '../types';
+import { useStore } from '../context/StoreContext';
+import { X, MessageSquare, Check, ShieldCheck, Zap } from 'lucide-react';
+
+interface ProductDetailModalProps {
+  product: Product;
+  onClose: () => void;
+}
+
+export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product, onClose }) => {
+  const { setWhatsAppModalProduct } = useStore();
+  const [selectedImg, setSelectedImg] = useState<string>(product.images[0] || '/images/socks_white.jpg');
+  const [selectedColor, setSelectedColor] = useState<string>(product.colors[0] || '');
+  const [selectedSize, setSelectedSize] = useState<string>(product.sizes[0] || '');
+
+  const handleOrderClick = () => {
+    setWhatsAppModalProduct(product);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-4xl glass-panel rounded-3xl border border-slate-700/80 shadow-2xl overflow-hidden text-slate-100 max-h-[92vh] flex flex-col">
+        
+        {/* Modal Header Bar */}
+        <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-lime-400/20 text-lime-400 border border-lime-400/30">
+              {product.category}
+            </span>
+            <span className="text-xs font-mono text-slate-400">SKU: {product.SKU}</span>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="p-6 md:p-8 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+          
+          {/* Left Column: Image Gallery */}
+          <div className="space-y-4">
+            <div className="aspect-[4/3] rounded-2xl bg-slate-900 overflow-hidden border border-slate-800 relative group">
+              <img
+                src={selectedImg}
+                alt={product.name}
+                className="w-full h-full object-cover transition-all duration-300"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-60" />
+            </div>
+
+            {/* Thumbnail selector */}
+            {product.images.length > 1 && (
+              <div className="flex items-center space-x-3 overflow-x-auto pb-2">
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImg(img)}
+                    className={`w-20 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                      selectedImg === img ? 'border-lime-400 shadow-md shadow-lime-400/20 scale-105' : 'border-slate-800 opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Feature highlights callout */}
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-lime-400 font-heading flex items-center gap-1.5">
+                <Zap className="w-4 h-4 fill-lime-400" />
+                Performance Specs:
+              </h4>
+              <div className="text-xs text-slate-300 space-y-1">
+                <p>• <strong>Grip Pattern:</strong> {product.gripPattern}</p>
+                <p>• <strong>Ankle Lock:</strong> Ergonomic compression band</p>
+                <p>• <strong>In-Boot Friction:</strong> Reduced by up to 98%</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Information & WhatsApp Order CTA */}
+          <div className="flex flex-col justify-between space-y-6">
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-extrabold text-white font-heading leading-tight">
+                  {product.name}
+                </h2>
+                
+                {product.price && (
+                  <div className="mt-3 flex items-baseline space-x-3">
+                    <span className="text-3xl font-extrabold text-lime-400 font-heading">
+                      ${product.price.toFixed(2)}
+                    </span>
+                    {product.originalPrice && (
+                      <span className="text-base text-slate-500 line-through">
+                        ${product.originalPrice.toFixed(2)}
+                      </span>
+                    )}
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      Direct WhatsApp Rate
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-sm text-slate-300 leading-relaxed">
+                {product.description}
+              </p>
+
+              {/* Material Specs Checklist */}
+              {product.materialSpecs && product.materialSpecs.length > 0 && (
+                <div className="space-y-2 pt-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 font-heading">
+                    Materials & Technology:
+                  </h4>
+                  <ul className="grid grid-cols-1 gap-1.5 text-xs text-slate-300">
+                    {product.materialSpecs.map((spec, i) => (
+                      <li key={i} className="flex items-center space-x-2">
+                        <Check className="w-4 h-4 text-lime-400 flex-shrink-0" />
+                        <span>{spec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Color options preview */}
+              {product.colors && product.colors.length > 0 && (
+                <div className="space-y-1.5 pt-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300 font-heading">
+                    Colorways Available:
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.colors.map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => setSelectedColor(c)}
+                        className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
+                          selectedColor === c 
+                            ? 'bg-lime-400 text-slate-950 font-bold border-lime-400' 
+                            : 'bg-slate-900 text-slate-300 border-slate-800'
+                        }`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Size options preview */}
+              {product.sizes && product.sizes.length > 0 && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300 font-heading">
+                    Select Foot Size:
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizes.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setSelectedSize(s)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                          selectedSize === s 
+                            ? 'bg-lime-400 text-slate-950 font-bold border-lime-400' 
+                            : 'bg-slate-900 text-slate-300 border-slate-800'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Direct Order Button */}
+            <div className="pt-4 border-t border-slate-800 space-y-3">
+              <button
+                onClick={handleOrderClick}
+                className="w-full py-4 px-6 rounded-2xl text-sm font-extrabold text-slate-950 bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 hover:from-lime-300 hover:to-emerald-300 shadow-xl shadow-lime-500/20 flex items-center justify-center space-x-2 transition-all transform hover:scale-[1.01] active:scale-95"
+              >
+                <MessageSquare className="w-5 h-5 fill-slate-950" />
+                <span>Order Now via WhatsApp (03085410293)</span>
+              </button>
+
+              <p className="text-[11px] text-center text-slate-400 flex items-center justify-center gap-1">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 inline" />
+                Direct WhatsApp link generates a prefilled order message. No credit card required.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+};

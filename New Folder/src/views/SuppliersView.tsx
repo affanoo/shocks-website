@@ -1,0 +1,80 @@
+import React from 'react';
+import { useStore } from '../context/StoreContext';
+import { Truck, MapPin, ExternalLink, Factory } from 'lucide-react';
+
+export const SuppliersView: React.FC = () => {
+  const { suppliers } = useStore();
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+      
+      {/* Header */}
+      <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-slate-800 space-y-3">
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-lime-400/10 border border-lime-400/30 text-lime-400 text-xs font-bold font-heading">
+          <Truck className="w-3.5 h-3.5" />
+          <span>Global Supply Chain Network</span>
+        </div>
+        <h1 className="text-3xl sm:text-5xl font-black text-white font-heading">
+          TRUSTED SUPPLIERS & PARTNERS
+        </h1>
+        <p className="text-sm text-slate-300 max-w-2xl">
+          We partner with world-leading technical textile mills, silicone compound laboratories, and eco-conscious packaging solution providers to deliver uncompromised quality.
+        </p>
+      </div>
+
+      {/* Supplier Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {suppliers.map((supplier) => (
+          <div
+            key={supplier.id}
+            className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6 hover:border-lime-400/40 transition-all"
+          >
+            <div className="w-20 h-20 rounded-2xl bg-slate-900 overflow-hidden flex-shrink-0 border border-slate-800 flex items-center justify-center p-2">
+              {supplier.logo ? (
+                <img src={supplier.logo} alt={supplier.name} className="w-full h-full object-contain" />
+              ) : (
+                <Factory className="w-8 h-8 text-lime-400" />
+              )}
+            </div>
+
+            <div className="space-y-3 flex-1">
+              <div>
+                <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-lime-400/20 text-lime-400 font-heading">
+                  {supplier.category}
+                </span>
+                <h3 className="text-xl font-bold text-white mt-1.5 font-heading">
+                  {supplier.name}
+                </h3>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {supplier.description}
+              </p>
+
+              <div className="pt-2 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800">
+                <span className="flex items-center space-x-1">
+                  <MapPin className="w-3.5 h-3.5 text-lime-400" />
+                  <span>{supplier.location}</span>
+                </span>
+
+                {supplier.website && (
+                  <a
+                    href={supplier.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center space-x-1 font-bold text-lime-400 hover:underline font-heading"
+                  >
+                    <span>Visit Website</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  );
+};

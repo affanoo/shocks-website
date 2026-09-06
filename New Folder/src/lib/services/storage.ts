@@ -1,0 +1,34 @@
+import { apiFetch } from '../apiClient';
+
+export async function uploadFile(
+  bucket: string,
+  file: File
+): Promise<{ url: string | null; error: Error | null }> {
+  try {
+    const url = await uploadImage(file);
+    return { url, error: null };
+  } catch (error: any) {
+    return { url: null, error: error instanceof Error ? error : new Error(String(error)) };
+  }
+}
+
+export async function uploadImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        const base64Data = reader.result as string;
+        const result = await apiFetch<{ url: string }>('/upload', {
+          method: 'POST',
+          body: JSON.stringify({ imageBase64: base64Data, filename: file.name }),
+        });
+        resolve(result.url || base64Data);
+      } catch (error) {
+        // Fallback to Base64 data URL if API call fails
+        resolve(reader.result as string);
+      }
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}

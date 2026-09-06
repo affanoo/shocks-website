@@ -1,0 +1,111 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id               String   @id @default(uuid())
+  name             String
+  slug             String   @unique
+  SKU              String   @unique
+  description      String
+  shortDescription String
+  price            Float?
+  originalPrice    Float?
+  status           String   @default("active")
+  featured         Boolean  @default(false)
+  category         String
+  colors           String[]
+  sizes            String[]
+  materialSpecs    String[]
+  gripPattern      String   @default("")
+  images           String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Blog {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  summary     String
+  content     String
+  image       String
+  author      String   @default("Kashif Tufail")
+  category    String
+  status      String   @default("published")
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Showroom {
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  city        String
+  country     String   @default("Pakistan")
+  phone       String
+  hours       String
+  mapUrl      String   @default("")
+  mapEmbedUrl String   @default("")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Leadership {
+  id           String   @id @default(uuid())
+  name         String
+  designation  String
+  bio          String
+  image        String
+  displayOrder Int      @default(1)
+  linkedIn     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Supplier {
+  id          String   @id @default(uuid())
+  name        String
+  logo        String
+  category    String
+  location    String
+  website     String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Inquiry {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String
+  subject   String
+  message   String
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
