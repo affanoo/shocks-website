@@ -425,18 +425,33 @@ app.put('/api/settings', authenticateToken, async (req: Request, res: Response) 
 });
 
 // ==========================================
-// FILE UPLOAD ROUTE (Data URL / Base64 handling)
+// FILE UPLOAD ROUTE (Cloudinary Integration)
 // ==========================================
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 app.post('/api/upload', authenticateToken, async (req: Request, res: Response) => {
   try {
     const { imageBase64, filename } = req.body;
     if (!imageBase64) {
       return res.status(400).json({ error: 'imageBase64 payload is required' });
     }
-    // Return data URL directly or hosted URL format
-    res.json({ url: imageBase64, publicUrl: imageBase64 });
+    
+    // Upload base64 image to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(imageBase64, {
+      folder: 'tssports',
+      public_id: filename ? filename.split('.')[0] : undefined,
+    });
+    
+    res.json({ url: uploadResponse.secure_url, publicUrl: uploadResponse.secure_url });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    console.error('Cloudinary upload error:', error);
+    res.status(500).json({ error: error.message || 'Image upload failed' });
   }
 });
 
