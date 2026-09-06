@@ -21,7 +21,7 @@ export const AdminLoginView: React.FC = () => {
       } else {
         setError(
           isBackendConnected
-            ? 'Invalid email or password. Please check your Supabase Auth credentials.'
+            ? 'Invalid email or password.'
             : 'Invalid credentials. Use sportspakistan10@gmail.com and password admin123'
         );
       }
@@ -52,7 +52,7 @@ export const AdminLoginView: React.FC = () => {
           </h2>
           <p className="text-xs text-slate-400">
             {isBackendConnected
-              ? 'Secure Supabase Auth access for TS Sports management'
+              ? 'Secure access for TS Sports management'
               : 'Authenticated access for TS Sports product & site management'}
           </p>
         </div>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
 import type { Product, Blog } from '../../types';
 import { uploadFile } from '../../lib/services/storage';
-import { isSupabaseConfigured } from '../../lib/supabase';
 import { 
   ShoppingBag, 
   BookOpen, 
@@ -272,7 +271,7 @@ export const AdminDashboardView: React.FC = () => {
               <h1 className="text-xl font-extrabold text-white font-heading">TS SPORTS ADMIN MANAGEMENT</h1>
               {isBackendConnected ? (
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold flex items-center gap-1 border border-emerald-500/30">
-                  <Database className="w-3 h-3" /> Supabase PostgreSQL
+                  <Database className="w-3 h-3" /> PostgreSQL (Prisma)
                 </span>
               ) : (
                 <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold flex items-center gap-1 border border-amber-500/30">
@@ -387,7 +386,7 @@ export const AdminDashboardView: React.FC = () => {
             <div className="glass-panel p-6 rounded-3xl border border-slate-800 space-y-3">
               <h3 className="text-base font-bold text-white font-heading">Database Info</h3>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Backend Status: <strong className="text-lime-400">{isBackendConnected ? 'Connected to Supabase PostgreSQL' : 'Offline / Demo Mode'}</strong>.
+                Backend Status: <strong className="text-lime-400">{isBackendConnected ? 'Connected to PostgreSQL (Prisma)' : 'Offline / Demo Mode'}</strong>.
               </p>
               <p className="text-xs text-slate-400">
                 All data, images, blogs, showrooms, and settings are managed securely with Row Level Security (RLS) policies.
