@@ -10,7 +10,7 @@ export async function fetchBlogs(): Promise<Blog[]> {
   }
 }
 
-export async function createBlog(blogData: Omit<Blog, 'id'>): Promise<Blog> {
+export async function createBlog(blogData: Omit<Blog, 'id' | 'publishedAt'>): Promise<Blog> {
   return await apiFetch<Blog>('/blogs', {
     method: 'POST',
     body: JSON.stringify(blogData),

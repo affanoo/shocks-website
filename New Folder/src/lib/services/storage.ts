@@ -1,7 +1,7 @@
 import { apiFetch } from '../apiClient';
 
 export async function uploadFile(
-  bucket: string,
+  _bucket: string,
   file: File
 ): Promise<{ url: string | null; error: Error | null }> {
   try {
